@@ -123,7 +123,7 @@ def dashboard():
 def add_expense():
     if request.method == "POST":
         amount = request.form["amount"]
-        category = request.form["category"]
+        category = request.form["category"].strip().capitalize()  # Capitalize first letter
         date = request.form["date"]
         description = request.form["description"]
 
@@ -181,7 +181,7 @@ def delete_income(income_id):
 @app.route("/set_budget", methods=["GET", "POST"])
 def set_budget():
     if request.method == "POST":
-        category = request.form["category"]
+        category = request.form["category"].strip().capitalize()  # Capitalize first letter
         limit = request.form["limit"]
         month = request.form["month"]
 
