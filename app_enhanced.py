@@ -32,7 +32,7 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS budgets (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         category TEXT UNIQUE,
-        budget_limit REAL,
+        limit REAL,
         month TEXT
     )
     """)
@@ -84,13 +84,16 @@ def dashboard():
 
     # Get all categories
     cursor.execute("SELECT DISTINCT category FROM expenses ORDER BY category")
+    categories = [row[0] for row in cursor.fetchall()] if cursor.fetchall() else []
+    cursor.execute("SELECT DISTINCT category FROM expenses ORDER BY category")
     categories = [row[0] for row in cursor.fetchall()]
 
     # Total expense
     total_query = "SELECT SUM(amount) FROM expenses WHERE 1=1"
+    total_params = params.copy()
     
     if start_date or end_date or category_filter:
-        cursor.execute(total_query + (" AND date >= ?" if start_date else "") + (" AND date <= ?" if end_date else "") + (" AND category = ?" if category_filter else ""), params)
+        cursor.execute(total_query + (" AND date >= ?" if start_date else "") + (" AND date <= ?" if end_date else "") + (" AND category = ?" if category_filter else ""), total_params)
     else:
         cursor.execute("SELECT SUM(amount) FROM expenses")
     total_expense = cursor.fetchone()[0] or 0
@@ -188,7 +191,7 @@ def set_budget():
         conn = connect_db()
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT OR REPLACE INTO budgets (category, budget_limit, month) VALUES (?, ?, ?)",
+            "INSERT OR REPLACE INTO budgets (category, limit, month) VALUES (?, ?, ?)",
             (category, limit, month)
         )
         conn.commit()
@@ -223,10 +226,10 @@ def view_budgets():
         spent = cursor.fetchone()[0] or 0
         budget_data.append({
             'category': budget['category'],
-            'limit': budget['budget_limit'],
+            'limit': budget['limit'],
             'spent': spent,
-            'remaining': budget['budget_limit'] - spent,
-            'percentage': (spent / budget['budget_limit'] * 100) if budget['budget_limit'] > 0 else 0
+            'remaining': budget['limit'] - spent,
+            'percentage': (spent / budget['limit'] * 100) if budget['limit'] > 0 else 0
         })
 
     conn.close()
@@ -314,57 +317,6 @@ def reports():
 
     return render_template("reports.html", monthly_summary=monthly_summary, current_month_breakdown=current_month_breakdown)
 
-@app.route("/search", methods=["GET"])
-def search():
-    conn = connect_db()
-    cursor = conn.cursor()
-
-    # Get search parameters
-    search_description = request.args.get('description', '').strip()
-    search_category = request.args.get('category', '').strip()
-    min_amount = request.args.get('min_amount', '')
-    max_amount = request.args.get('max_amount', '')
-
-    # Get all categories
-    cursor.execute("SELECT DISTINCT category FROM expenses ORDER BY category")
-    categories = [row[0] for row in cursor.fetchall()]
-
-    # Build search query
-    search_results = None
-    if search_description or search_category or min_amount or max_amount:
-        query = "SELECT * FROM expenses WHERE 1=1"
-        params = []
-
-        if search_description:
-            query += " AND description LIKE ?"
-            params.append(f"%{search_description}%")
-        
-        if search_category:
-            query += " AND category = ?"
-            params.append(search_category)
-        
-        if min_amount:
-            query += " AND amount >= ?"
-            params.append(float(min_amount))
-        
-        if max_amount:
-            query += " AND amount <= ?"
-            params.append(float(max_amount))
-
-        query += " ORDER BY date DESC"
-        
-        cursor.execute(query, params)
-        search_results = cursor.fetchall()
-
-    conn.close()
-
-    return render_template(
-        "search.html",
-        categories=categories,
-        search_results=search_results,
-        search_description=search_description,
-        search_category=search_category,
-        min_amount=min_amount,
-        max_amount=max_amount
-    )
-
+if __name__ == "__main__":
+    create_tables()
+    app.run(host="0.0.0.0", port=5000, debug=False)
