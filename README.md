@@ -1,6 +1,12 @@
 # Expense Tracker (local)
 
+Project title: Personal Expense Tracker
+Team Members: Ruthikka Arunkumar
+              Nafeesa Zainul 
+
 This project runs a small Flask app to track income, expenses, budgets and savings goals.
+
+
 
 Quick start (Windows, using provided venv):
 
@@ -37,3 +43,4 @@ Theme toggle:
 - A floating theme button (top-right) toggles light/dark and persists to `localStorage`.
 
 If you want, I can package the site or create a single-file demo you can run elsewhere.
+
