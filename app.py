@@ -382,4 +382,5 @@ def search():
 
 if __name__ == "__main__":
     create_tables()
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    # Run in debug mode for developer convenience (auto-reload, better errors)
+    app.run(host="0.0.0.0", port=5000, debug=True)

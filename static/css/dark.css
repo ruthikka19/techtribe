@@ -1,23 +1,28 @@
 :root{
-  --bg:#07101a;
-  --panel:#0f1720;
+  --bg:#07121a;
+  --panel:#0f1726;
   --muted:#9fb3bf;
   --text:#e6f3f5;
-  --accent:#2dd4bf;
+  --accent:#4fd1c5;
+  --accent-2:#60a5fa;
   --danger:#ff6b6b;
 }
 html,body{height:100%;}
+.body-bg{ }
 body{
   margin:0;background:linear-gradient(180deg,var(--bg),#03121a);color:var(--text);font-family:Inter,system-ui,Arial,Helvetica,sans-serif;
 }
 .navbar, .card, .modal-content, .table, .table thead {background-color:transparent}
 .navbar-dark .navbar-brand, .navbar-dark .nav-link{color:var(--text) !important}
 .container{color:var(--text)}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));border:1px solid rgba(255,255,255,0.03);}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:12px}
+.card .card-header{font-weight:700;color:var(--text);background:transparent;border-bottom:1px solid rgba(255,255,255,0.03)}
 .btn-primary{background:linear-gradient(90deg,var(--accent),#60a5fa);border:none;color:#071029}
 .btn-secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
 .btn-success{background:#16a34a;border:none}
+.btn{box-shadow:0 6px 18px rgba(2,6,23,0.35)}
 .form-control, .form-select{background:#071822;border:1px solid rgba(255,255,255,0.04);color:var(--text)}
+.form-control:focus, .form-select:focus{outline:none;box-shadow:0 6px 18px rgba(45,212,191,0.12);border-color:var(--accent)}
 .table td, .table th{border-color:rgba(255,255,255,0.04)}
 .table-striped>tbody>tr:nth-of-type(odd){background:rgba(255,255,255,0.01)}
 .progress{background:rgba(255,255,255,0.03)}
@@ -26,3 +31,34 @@ body{
 a{color:var(--accent)}
 /* small helpers */
 .text-muted{color:var(--muted) !important}
+
+/* Theme toggle button (floating) */
+.theme-toggle{position:fixed;top:12px;right:14px;z-index:2000;border-radius:999px;padding:6px 10px}
+
+/* Light theme overrides */
+.light{
+  --bg:#f1f5f9;
+  --panel:#ffffff;
+  --muted:#6b7280;
+  --text:#071122;
+  --accent:#2563eb;
+  --danger:#dc2626;
+}
+
+/* Make background respond to theme variables */
+body{background:linear-gradient(180deg,var(--bg),rgba(0,0,0,0.02));}
+
+/* Additional visual polish overrides */
+.card{border-radius:14px;padding:16px}
+.card .card-header{padding:12px 16px}
+.btn{box-shadow:0 8px 24px rgba(2,6,23,0.4);transition:transform .12s ease,box-shadow .12s ease}
+.btn:hover{transform:translateY(-2px)}
+.form-control, .form-select{padding:.6rem .75rem}
+.form-control:focus, .form-select:focus{box-shadow:0 10px 30px rgba(79,209,197,0.12);border-color:var(--accent)}
+.theme-toggle{top:14px;right:18px;padding:8px 12px}
+.theme-toggle.btn-outline-light{backdrop-filter:blur(6px)}
+.container{max-width:1100px;padding-left:18px;padding-right:18px}
+.navbar-brand{font-weight:700;letter-spacing:.4px}
+.nav-link{opacity:.95}
+@media (max-width:768px){.controls{flex-direction:column;gap:10px}.shell{padding:28px}}
+
