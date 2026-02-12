@@ -4,6 +4,9 @@ from datetime import datetime, timedelta
 import json
 
 app = Flask(__name__)
+# Enable template auto-reload so changes to templates show without full restart
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.jinja_env.auto_reload = True
 
 def create_tables():
     conn = connect_db()
@@ -54,6 +57,15 @@ def connect_db():
     conn = sqlite3.connect("database.db", timeout=5)
     conn.row_factory = sqlite3.Row
     return conn
+
+@app.route("/home")
+def home():
+    # Clear Jinja template cache to ensure latest template is used
+    try:
+        app.jinja_env.cache.clear()
+    except Exception:
+        pass
+    return render_template("home.html")
 
 @app.route("/")
 def dashboard():
